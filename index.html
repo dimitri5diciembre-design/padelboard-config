@@ -297,6 +297,7 @@
               <button
                 onclick="showLoginForm()"
                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors"
+                type="button"
               >
                 Iniciar Sesión
               </button>
@@ -320,6 +321,7 @@
                 <button
                   onclick="downloadApp()"
                   class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                  type="button"
                 >
                   Descargar App Móvil
                 </button>
@@ -426,6 +428,7 @@
                 <button
                   onclick="showFullStats()"
                   class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors"
+                  type="button"
                 >
                   Ver Historial Completo
                 </button>
@@ -562,56 +565,6 @@
               </form>
             </div>
 
-            <!-- Contenido sin login (opcional, lo mantenemos por si lo usas luego) -->
-            <div id="profile-no-login" class="hidden">
-              <div class="text-center py-12">
-                <div class="mb-8">
-                  <svg class="mx-auto h-24 w-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Inicia sesión para gestionar tu perfil</h2>
-                <p class="text-lg text-gray-600 mb-8">
-                  Accede a tu cuenta para personalizar configuraciones, ver tu historial y sincronizar datos con la app móvil.
-                </p>
-                <button
-                  onclick="showLoginForm()"
-                  class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors"
-                >
-                  Iniciar Sesión
-                </button>
-
-                <!-- App Móvil -->
-                <div class="mt-8">
-                  <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-                    <div class="mb-4">
-                      <svg class="w-16 h-16 mx-auto text-blue-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                        ></path>
-                      </svg>
-                      <h3 class="text-xl font-bold text-blue-800 mb-2">PadelBoard Móvil</h3>
-                      <p class="text-blue-600 mb-6">Lleva tus partidos contigo. Sincroniza automáticamente tus estadísticas.</p>
-                    </div>
-                    <button
-                      onclick="downloadApp()"
-                      class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-                    >
-                      Descargar App Móvil
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <!-- Perfil de usuario -->
             <div id="user-profile" class="hidden">
               <!-- Información del Usuario -->
@@ -626,88 +579,8 @@
                 </div>
               </div>
 
-              <!-- Configuraciones -->
-              <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">Configuraciones</h2>
-                <div class="grid md:grid-cols-2 gap-6">
-                  <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6">
-                    <h3 class="text-xl font-bold text-blue-800 mb-4 text-center">Preferencias de Juego</h3>
-                    <div class="space-y-4">
-                      <div class="flex justify-between items-center">
-                        <span class="text-gray-700">Formato favorito</span>
-                        <span class="font-bold text-blue-600">Al mejor de 3</span>
-                      </div>
-                      <div class="flex justify-between items-center">
-                        <span class="text-gray-700">Puntuación preferida</span>
-                        <span class="font-bold text-blue-600">Punto de Oro</span>
-                      </div>
-                      <div class="flex justify-between items-center">
-                        <span class="text-gray-700">Cambio de lado</span>
-                        <span class="font-bold text-blue-600">Final de set</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6">
-                    <h3 class="text-xl font-bold text-blue-800 mb-4 text-center">Configuración de App</h3>
-                    <div class="space-y-4">
-                      <div class="flex justify-between items-center">
-                        <span class="text-gray-700">Notificaciones</span>
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold" type="button">
-                          Activadas
-                        </button>
-                      </div>
-                      <div class="flex justify-between items-center">
-                        <span class="text-gray-700">Tema de la app</span>
-                        <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold" type="button">
-                          Claro
-                        </button>
-                      </div>
-                      <div class="flex justify-between items-center">
-                        <span class="text-gray-700">Idioma</span>
-                        <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold" type="button">
-                          Español
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Descargar App Móvil -->
-              <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">App Móvil</h2>
-                <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-                  <div class="mb-4">
-                    <svg class="w-16 h-16 mx-auto text-blue-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                      ></path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-blue-800 mb-2">PadelBoard Móvil</h3>
-                    <p class="text-blue-600 mb-6">Lleva tus partidos contigo. Sincroniza automáticamente tus estadísticas.</p>
-                  </div>
-                  <button
-                    onclick="downloadApp()"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-                    type="button"
-                  >
-                    Descargar App Móvil
-                  </button>
-                </div>
-              </div>
-
               <!-- Acciones -->
               <div class="space-y-4">
-                <button
-                  class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors"
-                  type="button"
-                >
-                  Editar Perfil
-                </button>
                 <button
                   onclick="handleLogout()"
                   class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors"
@@ -717,6 +590,7 @@
                 </button>
               </div>
             </div>
+
           </div>
           <!-- /Contenido Principal -->
         </div>
@@ -734,12 +608,8 @@
     <div class="flex items-center justify-center space-x-4">
       <div class="flex items-center space-x-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-          ></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
         </svg>
         <span class="text-sm font-medium">¡Descarga la App Móvil de PadelBoard!</span>
       </div>
@@ -766,59 +636,36 @@
   <!-- Navegación Inferior -->
   <div class="bottom-nav">
     <div class="flex">
-      <button
-        onclick="switchTab('configurador')"
-        id="tab-configurador"
-        class="flex-1 py-4 px-2 text-center tab-active transition-colors"
-        type="button"
-      >
+      <button onclick="switchTab('configurador')" id="tab-configurador"
+        class="flex-1 py-4 px-2 text-center tab-active transition-colors" type="button">
         <div class="flex flex-col items-center">
           <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            ></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
           </svg>
           <span class="text-xs font-medium">Configurar</span>
         </div>
       </button>
 
-      <button
-        onclick="switchTab('stats')"
-        id="tab-stats"
-        class="flex-1 py-4 px-2 text-center tab-inactive transition-colors"
-        type="button"
-      >
+      <button onclick="switchTab('stats')" id="tab-stats"
+        class="flex-1 py-4 px-2 text-center tab-inactive transition-colors" type="button">
         <div class="flex flex-col items-center">
           <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-            ></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
           </svg>
           <span class="text-xs font-medium">Estadísticas</span>
         </div>
       </button>
 
-      <button
-        onclick="switchTab('perfil')"
-        id="tab-perfil"
-        class="flex-1 py-4 px-2 text-center tab-inactive transition-colors"
-        type="button"
-      >
+      <button onclick="switchTab('perfil')" id="tab-perfil"
+        class="flex-1 py-4 px-2 text-center tab-inactive transition-colors" type="button">
         <div class="flex flex-col items-center">
           <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            ></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
           <span class="text-xs font-medium">Perfil</span>
         </div>
@@ -864,11 +711,8 @@
       </div>
 
       <div class="modal-actions">
-        <button
-          type="button"
-          onclick="closeGameTypeModal()"
-          class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl text-lg transition-colors"
-        >
+        <button type="button" onclick="closeGameTypeModal()"
+          class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl text-lg transition-colors">
           Cancelar
         </button>
       </div>
@@ -893,144 +737,89 @@
       </div>
 
       <div class="modal-actions">
-        <button
-          type="button"
-          onclick="closeConfirmModal()"
-          class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl text-lg transition-colors"
-        >
+        <button type="button" onclick="closeConfirmModal()"
+          class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl text-lg transition-colors">
           Cancelar
         </button>
-        <button
-          type="button"
-          onclick="startMatch()"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-lg transition-colors"
-        >
+        <button type="button" onclick="startMatch()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-lg transition-colors">
           Confirmar e Iniciar
         </button>
       </div>
     </div>
   </div>
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <!-- MQTT lib -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
   <script>
-   // =========================
-// MQTT (Browser -> HiveMQ)
-// =========================
-// =========================
-// MQTT (HiveMQ Cloud) - PB2
-// =========================
-let mqttClient = null;
-let mqttConnected = false;
+    // =========================
+    // MQTT (HiveMQ Cloud) - PB2
+    // =========================
+    let mqttClient = null;
+    let mqttConnected = false;
 
-const MQTT = {
-  host: "wss://8710939c545d4dc7adc1804a0bd323fb.s1.eu.hivemq.cloud:8884/mqtt",
-  username: "padelboard_pb2",
-  password: "Aqeria123", // <- pon la misma clave que usas en HiveMQ Websocket Client
-  topicConfig: "padelboard/PB2/config",
-  topicAck: "padelboard/PB2/ack" // opcional si el ESP32 responde
-};
+    const MQTT_CFG = {
+      url: "wss://8710939c545d4dc7adc1804a0bd323fb.s1.eu.hivemq.cloud:8884/mqtt",
+      username: "padelboard_pb2",
+      password: "Aqeria123",
+      topicConfig: "padelboard/PB2/config",
+      topicAck: "padelboard/PB2/ack" // opcional
+    };
 
-function mqttConnect() {
-  try {
-    mqttClient = mqtt.connect(MQTT.host, {
-      username: MQTT.username,
-      password: MQTT.password,
-      keepalive: 60,
-      clean: true,
-      reconnectPeriod: 2000,
-      connectTimeout: 5000,
-      clientId: "pb2-web-" + Math.random().toString(16).slice(2)
-    });
+    function mqttConnect() {
+      try {
+        mqttClient = mqtt.connect(MQTT_CFG.url, {
+          username: MQTT_CFG.username,
+          password: MQTT_CFG.password,
+          keepalive: 60,
+          clean: true,
+          reconnectPeriod: 2000,
+          connectTimeout: 8000,
+          clientId: "pb2-web-" + Math.random().toString(16).slice(2)
+        });
 
-    mqttClient.on("connect", () => {
-      mqttConnected = true;
-      console.log("✅ MQTT conectado");
-      // opcional: escuchar confirmación del ESP32
-      mqttClient.subscribe(MQTT.topicAck, { qos: 0 }, () => {
-        console.log("📩 Suscrito a ACK:", MQTT.topicAck);
-      });
-    });
+        mqttClient.on("connect", () => {
+          mqttConnected = true;
+          console.log("✅ MQTT conectado a HiveMQ Cloud");
 
-    mqttClient.on("reconnect", () => console.log("♻️ MQTT reconectando..."));
-    mqttClient.on("close", () => { mqttConnected = false; console.log("⚠️ MQTT desconectado"); });
-    mqttClient.on("error", (e) => console.error("❌ MQTT error:", e));
+          // opcional ACK:
+          mqttClient.subscribe(MQTT_CFG.topicAck, { qos: 0 }, () => {
+            console.log("📩 Suscrito a:", MQTT_CFG.topicAck);
+          });
+        });
 
-    mqttClient.on("message", (topic, msg) => {
-      console.log("📨 MQTT mensaje", topic, msg.toString());
-      if (topic === MQTT.topicAck) {
-        alert("✅ Marcador confirmó recepción ✅\n" + msg.toString());
+        mqttClient.on("reconnect", () => console.log("♻️ MQTT reconectando..."));
+        mqttClient.on("close", () => { mqttConnected = false; console.log("⚠️ MQTT desconectado"); });
+        mqttClient.on("error", (e) => { mqttConnected = false; console.error("❌ MQTT error:", e); });
+
+        mqttClient.on("message", (topic, msg) => {
+          console.log("📨 MQTT mensaje", topic, msg.toString());
+          if (topic === MQTT_CFG.topicAck) {
+            alert("✅ Marcador confirmó recepción:\n" + msg.toString());
+          }
+        });
+      } catch (e) {
+        console.error("❌ Error iniciando MQTT:", e);
       }
-    });
-  } catch (e) {
-    console.error("❌ mqttConnect exception:", e);
-  }
-}
-
-function mqttSendConfig(payloadObj) {
-  if (!mqttClient || !mqttConnected) {
-    alert("⚠️ MQTT no conectado todavía. Espera 2-3 segundos y vuelve a intentar.");
-    return false;
-  }
-  const payload = JSON.stringify(payloadObj);
-  mqttClient.publish(MQTT.topicConfig, payload, { qos: 0, retain: false });
-  console.log("✅ Publicado a", MQTT.topicConfig, payload);
-  return true;
-}
-
-// Opción A (Broker público HiveMQ) - recomendado para pruebas rápidas
-const MQTT_URL = "wss://broker.hivemq.com:8884/mqtt";
-
-// Si usas HiveMQ Cloud (cluster), sería algo así:
-// const MQTT_URL = "wss://TU-CLUSTER.s1.eu.hivemq.cloud:8884/mqtt";
-
-// Topic (usa exactamente el mismo que ya está escuchando tu ESP32)
-const MQTT_TOPIC_CONFIG = "padelboard/config";  // <-- AJUSTA a tu topic real
-
-// Si usas broker con usuario/clave (HiveMQ Cloud), OJO: en GitHub Pages NO puedes ocultar secretos.
-// const MQTT_OPTIONS = {
-//   username: "TU_USER",
-//   password: "TU_PASS",
-//   clean: true,
-//   connectTimeout: 4000,
-//   reconnectPeriod: 2000,
-// };
-
-const MQTT_OPTIONS = {
-  clean: true,
-  connectTimeout: 4000,
-  reconnectPeriod: 2000,
-};
-
-let mqttClient = null;
-
-function mqttConnect() {
-  try {
-    mqttClient = mqtt.connect(MQTT_URL, MQTT_OPTIONS);
-
-    mqttClient.on("connect", () => {
-      console.log("✅ MQTT conectado:", MQTT_URL);
-    });
-
-    mqttClient.on("reconnect", () => console.log("🔄 MQTT reconectando..."));
-    mqttClient.on("error", (err) => console.log("❌ MQTT error:", err?.message || err));
-    mqttClient.on("close", () => console.log("⚠️ MQTT desconectado"));
-  } catch (e) {
-    console.log("❌ Error iniciando MQTT:", e);
-  }
-}
-
-function mqttPublishConfig(payloadObj) {
-  return new Promise((resolve, reject) => {
-    if (!mqttClient || !mqttClient.connected) {
-      return reject(new Error("MQTT no conectado"));
     }
-    const msg = JSON.stringify(payloadObj);
 
-    mqttClient.publish(MQTT_TOPIC_CONFIG, msg, { qos: 0, retain: false }, (err) => {
-      if (err) return reject(err);
-      resolve(true);
-    });
-  });
-}
+    function mqttSendConfig(payloadObj) {
+      if (!mqttClient || !mqttConnected) {
+        console.warn("⚠️ MQTT no conectado aún");
+        return false;
+      }
+      const payload = JSON.stringify(payloadObj);
+      mqttClient.publish(MQTT_CFG.topicConfig, payload, { qos: 0, retain: false });
+      console.log("✅ Publicado a", MQTT_CFG.topicConfig, payload);
+      return true;
+    }
+
+    async function sendLocalConfig(params) {
+      const apiUrl = `http://192.168.4.1/api/names?${params.toString()}`;
+      await fetch(apiUrl, { mode: "no-cors" });
+      return true;
+    }
 
     // =========================
     // Estado global
@@ -1051,7 +840,6 @@ function mqttPublishConfig(payloadObj) {
     // Utilidades UI
     // =========================
     function handleOverlayClose(evt, modalId) {
-      // Cierra modal si el click fue en overlay (no en contenido)
       if (evt.target && evt.target.id === modalId) {
         if (modalId === "gameTypeModal") closeGameTypeModal();
         if (modalId === "confirmModal") closeConfirmModal();
@@ -1088,9 +876,7 @@ Beneficios de la app móvil:
       `;
 
       if (confirm(downloadOptions)) {
-        alert(
-          "🚀 ¡Genial! Te redirigiremos a la tienda de aplicaciones.\n\n(En la versión real, aquí se abriría el link de descarga correspondiente)"
-        );
+        alert("🚀 ¡Genial! (Demo) Aquí se abriría el link real de descarga.");
       }
     }
 
@@ -1102,7 +888,6 @@ Beneficios de la app móvil:
       const modal = document.getElementById("gameTypeModal");
       modal.classList.remove("hidden");
 
-      // marcar selección actual
       document.querySelectorAll("#gameTypeModal .game-type-button-list button").forEach((btn) => {
         btn.classList.remove("selected");
       });
@@ -1120,12 +905,10 @@ Beneficios de la app móvil:
     function selectGameTypeFromModal(evt, type, title, desc) {
       config.gameType = type;
 
-      // selección visual
       document.querySelectorAll("#gameTypeModal .game-type-button-list button").forEach((btn) => btn.classList.remove("selected"));
       const clicked = evt && evt.currentTarget ? evt.currentTarget : null;
       if (clicked) clicked.classList.add("selected");
 
-      // actualizar tarjeta resumen
       document.getElementById("game-type-summary-title").textContent = title;
       document.getElementById("game-type-summary-desc").textContent = desc;
 
@@ -1222,9 +1005,9 @@ Beneficios de la app móvil:
     }
 
     // =========================
-    // Iniciar Partido (ENVÍO AL ESP32)
+    // Iniciar Partido (MQTT + Local)
     // =========================
-    function startMatch() {
+    async function startMatch() {
       closeConfirmModal();
 
       const players = {
@@ -1243,62 +1026,56 @@ Beneficios de la app móvil:
         return;
       }
 
+      const tournamentEl = document.getElementById("tournamentMode");
+      const isTournament = tournamentEl ? tournamentEl.checked : false;
+
+      // params para LOCAL (ESP32 AP)
       const params = new URLSearchParams();
       params.append("a_first", players.jugador1);
       params.append("a_last", players.jugador2);
       params.append("b_first", players.jugador3);
       params.append("b_last", players.jugador4);
-
       params.append("gameType", config.gameType);
       params.append("scoring", config.scoring);
       params.append("sideChange", config.sideChange);
-
-      const tournamentEl = document.getElementById("tournamentMode");
-      const isTournament = tournamentEl ? tournamentEl.checked : false;
       params.append("tournamentMode", isTournament);
 
-      // =========================
-  // ENVIAR por MQTT (HiveMQ)
-  // =========================
+      // payload para MQTT (Internet)
+      const payload = {
+        a_first: players.jugador1,
+        a_last: players.jugador2,
+        b_first: players.jugador3,
+        b_last: players.jugador4,
+        gameType: config.gameType,
+        scoring: config.scoring,
+        sideChange: config.sideChange,
+        tournamentMode: isTournament
+      };
 
-  // 1) Payload tipo JSON (recomendado)
-  const payload = {
-    a_first: players.jugador1,
-    a_last: players.jugador2,
-    b_first: players.jugador3,
-    b_last: players.jugador4,
-    gameType: config.gameType,
-    scoring: config.scoring,
-    sideChange: config.sideChange,
-    tournamentMode: isTournament
-  };
+      const mqttOk = mqttSendConfig(payload);
 
-  // 2) Publicar al topic que ya usas: padelboard/PB2/config
-  const ok = mqttSendConfig(payload); // <- esta función la agregamos antes (publish JSON)
+      let localOk = false;
+      try {
+        await sendLocalConfig(params);
+        localOk = true;
+      } catch (e) {
+        localOk = false;
+      }
 
-  if (ok) {
-    setTimeout(() => {
-      alert("✅ ¡Configuración enviada por MQTT!\n\nRevisa la pantalla de la TV.");
-    }, 100);
-  } else {
-    alert("⚠️ No se pudo enviar. MQTT aún no está conectado.");
-  }
-}
-      // IMPORTANTE:
-      // - Si estás conectado al AP del ESP32, esto funciona directo (192.168.4.1).
-      // - Para "desde internet", luego cambiamos esto a tu dominio/API (por ejemplo: https://tudominio/api/names)
-      const apiUrl = `http://192.168.4.1/api/names?${params.toString()}`;
-
-      fetch(apiUrl, { mode: "no-cors" })
-        .then(() => {
-          setTimeout(() => {
-            alert("✅ ¡Partido Iniciado!\n\nRevisa la pantalla de la TV.");
-          }, 100);
-        })
-        .catch((error) => {
-          console.error("Error al enviar la configuración:", error);
-          alert('Hubo un problema al conectar con el marcador.\n\nAsegúrate de estar conectado a la red WiFi "PadelScoreboard".');
-        });
+      if (mqttOk || localOk) {
+        alert(
+          "✅ Configuración enviada.\n\n" +
+          (mqttOk ? "• MQTT: OK (Internet)\n" : "• MQTT: NO\n") +
+          (localOk ? "• Local: OK (ESP32)\n" : "• Local: NO\n") +
+          "\nRevisa la pantalla de la TV."
+        );
+      } else {
+        alert(
+          "❌ No se pudo enviar ni por MQTT ni local.\n\n" +
+          "Revisa Console (F12) por errores.\n" +
+          "Debe salir: '✅ MQTT conectado a HiveMQ Cloud'."
+        );
+      }
     }
 
     // =========================
@@ -1320,15 +1097,12 @@ Beneficios de la app móvil:
       const cg = document.getElementById("customGames");
       if (cg) cg.value = "";
 
-      // Reset tarjeta Tipo de Juego
       document.getElementById("game-type-summary-title").textContent = "Al mejor de 3";
       document.getElementById("game-type-summary-desc").textContent = "Formato clásico (por defecto)";
 
-      // Reset botones
       setSegmentSelected("#scoring-golden, #scoring-advantage", "scoring-golden");
       setSegmentSelected("#side-odd, #side-set, #side-none", "side-set");
 
-      // Reset checkbox torneo (por si el CSS lo mantiene)
       const tournamentEl = document.getElementById("tournamentMode");
       if (tournamentEl) tournamentEl.checked = false;
 
@@ -1390,267 +1164,47 @@ Beneficios de la app móvil:
     // =========================
     // Estadísticas (demo)
     // =========================
-    function showFullStats() {
-      // (Tu bloque largo original se mantiene como estaba, solo lo dejamos igual)
-      const fullStatsContent = `
-        <!-- Historial Completo de Estadísticas -->
-        <div class="mb-8">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Historial Completo de Estadísticas</h2>
-            <button onclick="showBasicStats()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-colors" type="button">
-              Volver al Resumen
-            </button>
-          </div>
-        </div>
-
-        <!-- (Contenido demo) -->
-        <div class="mb-8">
-          <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">Estadísticas del Último Partido</h3>
-          <div class="grid md:grid-cols-3 gap-6">
-            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-              <h4 class="text-2xl font-bold text-blue-800 mb-2">1h 23min</h4>
-              <p class="text-blue-600 font-medium">Duración Total</p>
-            </div>
-            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-              <h4 class="text-2xl font-bold text-blue-800 mb-2">156</h4>
-              <p class="text-blue-600 font-medium">Puntos Totales</p>
-            </div>
-            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-              <h4 class="text-2xl font-bold text-blue-800 mb-2">7 puntos</h4>
-              <p class="text-blue-600 font-medium">Racha Máxima</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="mb-8">
-          <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-            <div class="mb-4">
-              <svg class="w-16 h-16 mx-auto text-blue-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-              </svg>
-              <h3 class="text-xl font-bold text-blue-800 mb-2">PadelBoard Móvil</h3>
-              <p class="text-blue-600 mb-6">Lleva tus partidos contigo. Sincroniza automáticamente tus estadísticas.</p>
-            </div>
-            <button onclick="downloadApp()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors" type="button">
-              Descargar App Móvil
-            </button>
-          </div>
-        </div>
-      `;
-      document.getElementById("stats-with-login").innerHTML = fullStatsContent;
-    }
-
-    function showBasicStats() {
-      // restaurar la vista básica (igual a la original)
-      const basicStatsContent = `
-        <!-- Resumen General -->
-        <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">Resumen General</h2>
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-              <h3 class="text-3xl font-bold text-blue-800 mb-2">24</h3>
-              <p class="text-blue-600 font-medium">Partidos Jugados</p>
-            </div>
-            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-              <h3 class="text-3xl font-bold text-blue-800 mb-2">67%</h3>
-              <p class="text-blue-600 font-medium">Porcentaje de Victorias</p>
-            </div>
-            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 text-center">
-              <h3 class="text-3xl font-bold text-blue-800 mb-2">1,247</h3>
-              <p class="text-blue-600 font-medium">Puntos Totales</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Estadísticas Detalladas -->
-        <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">Estadísticas Detalladas</h2>
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-xl p-6 border-2 border-gray-200">
-              <h3 class="text-xl font-bold text-gray-800 mb-4">Rendimiento por Set</h3>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-700">Sets ganados</span>
-                  <span class="font-bold text-blue-600">32</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-700">Sets perdidos</span>
-                  <span class="font-bold text-gray-600">16</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-700">Porcentaje de sets</span>
-                  <span class="font-bold text-blue-600">67%</span>
-                </div>
-              </div>
-            </div>
-            <div class="bg-white rounded-xl p-6 border-2 border-gray-200">
-              <h3 class="text-xl font-bold text-gray-800 mb-4">Rendimiento por Game</h3>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-700">Games ganados</span>
-                  <span class="font-bold text-blue-600">156</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-700">Games perdidos</span>
-                  <span class="font-bold text-gray-600">98</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-700">Porcentaje de games</span>
-                  <span class="font-bold text-blue-600">61%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Historial de Partidos -->
-        <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center">Últimos Partidos</h2>
-          <div class="bg-white rounded-xl p-6 border-2 border-gray-200">
-            <div class="space-y-4">
-              <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <span class="font-bold text-gray-800">Juan & Pedro vs Carlos & Ana</span>
-                  <p class="text-sm text-gray-600">Hace 2 días - Club Deportivo</p>
-                </div>
-                <span class="font-bold text-green-600 text-lg">6-4, 6-2</span>
-              </div>
-              <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <span class="font-bold text-gray-800">María & Luis vs Sofia & Diego</span>
-                  <p class="text-sm text-gray-600">Hace 5 días - Polideportivo Norte</p>
-                </div>
-                <span class="font-bold text-red-600 text-lg">4-6, 3-6</span>
-              </div>
-              <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <span class="font-bold text-gray-800">Alex & Carmen vs Roberto & Elena</span>
-                  <p class="text-sm text-gray-600">Hace 1 semana - Centro Deportivo</p>
-                </div>
-                <span class="font-bold text-green-600 text-lg">7-5, 6-4</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="text-center">
-          <button onclick="showFullStats()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-colors" type="button">
-            Ver Historial Completo
-          </button>
-        </div>
-      `;
-      document.getElementById("stats-with-login").innerHTML = basicStatsContent;
-    }
+    function showFullStats() { alert("Demo: Historial completo (pendiente)"); }
+    function showBasicStats() { alert("Demo: Resumen (pendiente)"); }
 
     // =========================
     // Auth (demo)
     // =========================
-    function showLoginForm() {
-      document.getElementById("profile-no-login").classList.add("hidden");
-      document.getElementById("user-profile").classList.add("hidden");
-      document.getElementById("register-form").classList.add("hidden");
-      document.getElementById("login-form").classList.remove("hidden");
-      switchTab("perfil");
-    }
+    function showLoginForm() { switchTab("perfil"); }
 
-    function showRegisterForm() {
-      document.getElementById("profile-no-login").classList.add("hidden");
-      document.getElementById("user-profile").classList.add("hidden");
-      document.getElementById("login-form").classList.add("hidden");
-      document.getElementById("register-form").classList.remove("hidden");
-      switchTab("perfil");
-    }
+    function showRegisterForm() { switchTab("perfil"); }
 
     function handleLogin(evt) {
       evt.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      if (email && password) {
-        isLoggedIn = true;
-        const base = email.split("@")[0] || "Usuario";
-        currentUser = {
-          name: base.charAt(0).toUpperCase() + base.slice(1),
-          email: email,
-          initials: (base.charAt(0) || "U").toUpperCase() + (base.charAt(1) || "U").toUpperCase(),
-        };
-
-        updateUserProfile();
-        updateStatsView();
-        showUserProfile();
-
-        alert("¡Bienvenido! Has iniciado sesión correctamente.");
-      }
+      isLoggedIn = true;
+      updateStatsView();
+      alert("Login demo: OK");
     }
 
     function handleRegister(evt) {
       evt.preventDefault();
-
-      const name = document.getElementById("reg-name").value;
-      const email = document.getElementById("reg-email").value;
-      const password = document.getElementById("reg-password").value;
-
-      if ((password || "").length < 6) {
-        alert("La contraseña debe tener al menos 6 caracteres");
-        return;
-      }
-
-      if (name && email && password) {
-        isLoggedIn = true;
-        currentUser = {
-          name: name,
-          email: email,
-          initials: name
-            .split(" ")
-            .filter(Boolean)
-            .map((n) => n.charAt(0))
-            .join("")
-            .toUpperCase()
-            .substring(0, 2),
-        };
-
-        updateUserProfile();
-        updateStatsView();
-        showUserProfile();
-
-        alert("¡Cuenta creada exitosamente! Bienvenido a PadelBoard.");
-      }
-    }
-
-    function showUserProfile() {
-      document.getElementById("profile-no-login").classList.add("hidden");
-      document.getElementById("login-form").classList.add("hidden");
-      document.getElementById("register-form").classList.add("hidden");
-      document.getElementById("user-profile").classList.remove("hidden");
-    }
-
-    function updateUserProfile() {
-      if (!currentUser) return;
-      document.getElementById("user-initials").textContent = currentUser.initials;
-      document.getElementById("user-name").textContent = currentUser.name;
-      document.getElementById("user-email").textContent = currentUser.email;
+      isLoggedIn = true;
+      updateStatsView();
+      alert("Registro demo: OK");
     }
 
     function handleLogout() {
       isLoggedIn = false;
-      currentUser = null;
       updateStatsView();
-
-      document.getElementById("user-profile").classList.add("hidden");
-      document.getElementById("register-form").classList.add("hidden");
-      document.getElementById("profile-no-login").classList.add("hidden");
-      document.getElementById("login-form").classList.remove("hidden");
-
-      alert("Sesión cerrada correctamente");
+      alert("Sesión cerrada");
     }
 
     function updateStatsView() {
+      const noLogin = document.getElementById("stats-no-login");
+      const withLogin = document.getElementById("stats-with-login");
+      if (!noLogin || !withLogin) return;
+
       if (isLoggedIn) {
-        document.getElementById("stats-no-login").classList.add("hidden");
-        document.getElementById("stats-with-login").classList.remove("hidden");
+        noLogin.classList.add("hidden");
+        withLogin.classList.remove("hidden");
       } else {
-        document.getElementById("stats-no-login").classList.remove("hidden");
-        document.getElementById("stats-with-login").classList.add("hidden");
+        noLogin.classList.remove("hidden");
+        withLogin.classList.add("hidden");
       }
     }
 
@@ -1658,34 +1212,19 @@ Beneficios de la app móvil:
     // Init
     // =========================
     document.addEventListener("DOMContentLoaded", function () {
+      mqttConnect();
+      updateStatsView();
 
-  // 🔌 Conectar MQTT (GitHub Pages → HiveMQ → ESP32)
-  mqttConnect();
-
-  // 🔁 Lo que YA tenías
-  updateStatsView();
-      // Login UI inicial
-      if (!isLoggedIn) {
-        document.getElementById("login-form").classList.remove("hidden");
-        document.getElementById("profile-no-login").classList.add("hidden");
-        document.getElementById("user-profile").classList.add("hidden");
-        document.getElementById("register-form").classList.add("hidden");
-      }
-
-      // listeners inputs
       document.querySelectorAll('input[type="text"]').forEach((input) => {
         input.addEventListener("input", updateSummary);
       });
 
-      // defaults visuales
       setSegmentSelected("#scoring-golden, #scoring-advantage", "scoring-golden");
       setSegmentSelected("#side-odd, #side-set, #side-none", "side-set");
 
-      // torneo afecta summary
       const tournamentEl = document.getElementById("tournamentMode");
       if (tournamentEl) tournamentEl.addEventListener("change", updateSummary);
 
-      // Banner app: opcional (solo móvil)
       try {
         const isMobile = window.matchMedia && window.matchMedia("(max-width: 640px)").matches;
         if (isMobile) {
@@ -1701,6 +1240,3 @@ Beneficios de la app móvil:
   </script>
 </body>
 </html>
-
-
-
