@@ -750,113 +750,121 @@
   </div>
 
   <!-- MQTT lib -->
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
-  <script>
-    // =========================
-    // MQTT (HiveMQ Cloud) - PB2
-    // =========================
-    let mqttClient = null;
-    let mqttConnected = false;
+<script>
+  // ==========================================
+  // MQTT (GitHub Pages / Browser -> HiveMQ Cloud)
+  // ==========================================
+  let mqttClient = null;
+  let mqttConnected = false;
 
-    const MQTT_CFG = {
-      url: "wss://8710939c545d4dc7adc1804a0bd323fb.s1.eu.hivemq.cloud:8884/mqtt",
-      username: "padelboard_pb2",
-      password: "Aqeria123",
-      topicConfig: "padelboard/PB2/config",
-      topicAck: "padelboard/PB2/ack" // opcional
-    };
+  const MQTT_CFG = {
+    // OJO: en el cliente WebSocket de HiveMQ Cloud el host es SIN "wss://" y el path es "/mqtt"
+    // Aquí usamos el URL completo para mqtt.js:
+    url: "wss://8710939c545d4dc7adc1804a0bd323fb.s1.eu.hivemq.cloud:8884/mqtt",
+    username: "padelboard_pb2",
+    password: "Aqeria123",
+    topicConfig: "padelboard/PB2/config",
+    topicAck: "padelboard/PB2/ack" // opcional (si tu ESP32 publica confirmación)
+  };
 
-    function mqttConnect() {
-      try {
-        mqttClient = mqtt.connect(MQTT_CFG.url, {
-          username: MQTT_CFG.username,
-          password: MQTT_CFG.password,
-          keepalive: 60,
-          clean: true,
-          reconnectPeriod: 2000,
-          connectTimeout: 8000,
-          clientId: "pb2-web-" + Math.random().toString(16).slice(2)
+  function mqttConnect() {
+    try {
+      console.log("🔌 Iniciando MQTT hacia:", MQTT_CFG.url);
+
+      mqttClient = mqtt.connect(MQTT_CFG.url, {
+        username: MQTT_CFG.username,
+        password: MQTT_CFG.password,
+        keepalive: 60,
+        clean: true,
+        reconnectPeriod: 2000,
+        connectTimeout: 8000,
+        clientId: "pb2-web-" + Math.random().toString(16).slice(2)
+      });
+
+      mqttClient.on("connect", () => {
+        mqttConnected = true;
+        console.log("✅ MQTT conectado a HiveMQ Cloud");
+
+        // Opcional: escuchar ACK del ESP32
+        mqttClient.subscribe(MQTT_CFG.topicAck, { qos: 0 }, (err) => {
+          if (err) console.log("⚠️ Error suscribiendo ACK:", err);
+          else console.log("📩 Suscrito a ACK:", MQTT_CFG.topicAck);
         });
+      });
 
-        mqttClient.on("connect", () => {
-          mqttConnected = true;
-          console.log("✅ MQTT conectado a HiveMQ Cloud");
+      mqttClient.on("reconnect", () => console.log("♻️ MQTT reconectando..."));
+      mqttClient.on("close", () => { mqttConnected = false; console.log("⚠️ MQTT desconectado"); });
 
-          // opcional ACK:
-          mqttClient.subscribe(MQTT_CFG.topicAck, { qos: 0 }, () => {
-            console.log("📩 Suscrito a:", MQTT_CFG.topicAck);
-          });
-        });
+      mqttClient.on("error", (e) => {
+        mqttConnected = false;
+        console.error("❌ MQTT error:", e);
+      });
 
-        mqttClient.on("reconnect", () => console.log("♻️ MQTT reconectando..."));
-        mqttClient.on("close", () => { mqttConnected = false; console.log("⚠️ MQTT desconectado"); });
-        mqttClient.on("error", (e) => { mqttConnected = false; console.error("❌ MQTT error:", e); });
+      mqttClient.on("message", (topic, msg) => {
+        const text = (msg || "").toString();
+        console.log("📨 MQTT mensaje:", topic, text);
 
-        mqttClient.on("message", (topic, msg) => {
-          console.log("📨 MQTT mensaje", topic, msg.toString());
-          if (topic === MQTT_CFG.topicAck) {
-            alert("✅ Marcador confirmó recepción:\n" + msg.toString());
-          }
-        });
-      } catch (e) {
-        console.error("❌ Error iniciando MQTT:", e);
-      }
+        if (topic === MQTT_CFG.topicAck) {
+          alert("✅ Marcador confirmó recepción ✅\n" + text);
+        }
+      });
+
+    } catch (e) {
+      mqttConnected = false;
+      console.error("❌ mqttConnect exception:", e);
     }
+  }
 
-    function mqttSendConfig(payloadObj) {
-      if (!mqttClient || !mqttConnected) {
-        console.warn("⚠️ MQTT no conectado aún");
-        return false;
-      }
-      const payload = JSON.stringify(payloadObj);
-      mqttClient.publish(MQTT_CFG.topicConfig, payload, { qos: 0, retain: false });
-      console.log("✅ Publicado a", MQTT_CFG.topicConfig, payload);
-      return true;
+  function mqttSendConfig(payloadObj) {
+    if (!mqttClient || !mqttConnected) return false;
+    const payload = JSON.stringify(payloadObj);
+
+    mqttClient.publish(MQTT_CFG.topicConfig, payload, { qos: 0, retain: false }, (err) => {
+      if (err) console.error("❌ Error publicando MQTT:", err);
+      else console.log("✅ Publicado a", MQTT_CFG.topicConfig, payload);
+    });
+
+    return true;
+  }
+
+  // ==========================================
+  // Estado global (tu app)
+  // ==========================================
+  let config = {
+    players: {},
+    gameType: "3sets",
+    scoring: "golden",
+    countingMethod: "players",
+    sideChange: "set",
+    tournamentMode: false,
+  };
+
+  let isLoggedIn = false;
+  let currentUser = null;
+
+  // ==========================================
+  // Utilidades UI
+  // ==========================================
+  function handleOverlayClose(evt, modalId) {
+    if (evt.target && evt.target.id === modalId) {
+      if (modalId === "gameTypeModal") closeGameTypeModal();
+      if (modalId === "confirmModal") closeConfirmModal();
     }
+  }
 
-    async function sendLocalConfig(params) {
-      const apiUrl = `http://192.168.4.1/api/names?${params.toString()}`;
-      await fetch(apiUrl, { mode: "no-cors" });
-      return true;
-    }
+  function setSegmentSelected(groupSelector, selectedId) {
+    document.querySelectorAll(groupSelector).forEach((btn) => btn.classList.remove("selected"));
+    const el = document.getElementById(selectedId);
+    if (el) el.classList.add("selected");
+  }
 
-    // =========================
-    // Estado global
-    // =========================
-    let config = {
-      players: {},
-      gameType: "3sets",
-      scoring: "golden",
-      countingMethod: "players",
-      sideChange: "set",
-      tournamentMode: false,
-    };
-
-    let isLoggedIn = false;
-    let currentUser = null;
-
-    // =========================
-    // Utilidades UI
-    // =========================
-    function handleOverlayClose(evt, modalId) {
-      if (evt.target && evt.target.id === modalId) {
-        if (modalId === "gameTypeModal") closeGameTypeModal();
-        if (modalId === "confirmModal") closeConfirmModal();
-      }
-    }
-
-    function setSegmentSelected(groupSelector, selectedId) {
-      document.querySelectorAll(groupSelector).forEach((btn) => btn.classList.remove("selected"));
-      const el = document.getElementById(selectedId);
-      if (el) el.classList.add("selected");
-    }
-
-    // =========================
-    // Descarga App (demo)
-    // =========================
-    function downloadApp() {
-      const downloadOptions = `
+  // ==========================================
+  // Descarga App (demo)
+  // ==========================================
+  function downloadApp() {
+    const downloadOptions = `
 Descarga PadelBoard App
 
 Elige tu plataforma:
@@ -865,378 +873,440 @@ Elige tu plataforma:
 🤖 Android (Google Play)
 💻 Versión de Escritorio
 
-Beneficios de la app móvil:
-• Marcador offline sin conexión a internet
-• Sincronización automática de estadísticas
-• Notificaciones de partidos programados
-• Análisis avanzado de rendimiento
-• Interfaz optimizada para móviles
-
 ¿En qué dispositivo quieres instalarla?
-      `;
+    `;
 
-      if (confirm(downloadOptions)) {
-        alert("🚀 ¡Genial! (Demo) Aquí se abriría el link real de descarga.");
-      }
+    if (confirm(downloadOptions)) {
+      alert("🚀 (Demo) Aquí abriríamos el link de descarga real.");
     }
+  }
 
-    // =========================
-    // Modal Tipo de Juego
-    // =========================
-    function openGameTypeModal() {
-      document.body.classList.add("modal-open");
-      const modal = document.getElementById("gameTypeModal");
-      modal.classList.remove("hidden");
+  // ==========================================
+  // Modal Tipo de Juego
+  // ==========================================
+  function openGameTypeModal() {
+    document.body.classList.add("modal-open");
+    const modal = document.getElementById("gameTypeModal");
+    modal.classList.remove("hidden");
 
-      document.querySelectorAll("#gameTypeModal .game-type-button-list button").forEach((btn) => {
-        btn.classList.remove("selected");
-      });
-
-      const currentType = config.gameType;
-      const currentButton = document.querySelector(`#gameTypeModal button[onclick*="'${currentType}'"]`);
-      if (currentButton) currentButton.classList.add("selected");
-    }
-
-    function closeGameTypeModal() {
-      document.body.classList.remove("modal-open");
-      document.getElementById("gameTypeModal").classList.add("hidden");
-    }
-
-    function selectGameTypeFromModal(evt, type, title, desc) {
-      config.gameType = type;
-
-      document.querySelectorAll("#gameTypeModal .game-type-button-list button").forEach((btn) => btn.classList.remove("selected"));
-      const clicked = evt && evt.currentTarget ? evt.currentTarget : null;
-      if (clicked) clicked.classList.add("selected");
-
-      document.getElementById("game-type-summary-title").textContent = title;
-      document.getElementById("game-type-summary-desc").textContent = desc;
-
-      closeGameTypeModal();
-      updateSummary();
-    }
-
-    // =========================
-    // Selecciones configurador
-    // =========================
-    function selectScoring(type, element) {
-      config.scoring = type;
-      const parent = element.parentElement;
-      parent.querySelectorAll(".segment-button").forEach((btn) => btn.classList.remove("selected"));
-      element.classList.add("selected");
-      updateSummary();
-    }
-
-    function selectCountingMethod(type, element) {
-      config.countingMethod = type;
-      const parent = element.parentElement;
-      parent.querySelectorAll(".segment-button").forEach((btn) => btn.classList.remove("selected"));
-      element.classList.add("selected");
-      updateSummary();
-    }
-
-    function selectSideChange(type, element) {
-      config.sideChange = type;
-      const parent = element.parentElement;
-      parent.querySelectorAll(".segment-button").forEach((btn) => btn.classList.remove("selected"));
-      element.classList.add("selected");
-      updateSummary();
-    }
-
-    function selectCustomGames() {
-      const customGames = document.getElementById("customGames").value;
-      if (customGames) {
-        config.gameType = `custom-${customGames}`;
-        updateSummary();
-      }
-    }
-
-    // =========================
-    // Resumen modal
-    // =========================
-    function updateSummary() {
-      const players = {
-        jugador1: (document.getElementById("jugador1").value || "").trim() || "Jugador 1",
-        jugador2: (document.getElementById("jugador2").value || "").trim() || "Jugador 2",
-        jugador3: (document.getElementById("jugador3").value || "").trim() || "Jugador 3",
-        jugador4: (document.getElementById("jugador4").value || "").trim() || "Jugador 4",
-      };
-
-      const gameTypes = {
-        "1set": "1 Set",
-        "3sets": "Al mejor de 3 sets",
-        "2sets-super": "2 Sets + Super Tie-break",
-        "tiebreak": "Solo Tie-break (7 puntos)",
-        "super-tiebreak": "Solo Super Tie-break (10 puntos)",
-        "quick": "Juego Rápido (4 games)",
-      };
-
-      let gameTypeText = gameTypes[config.gameType] || "No seleccionado";
-      if (config.gameType && config.gameType.startsWith("custom-")) {
-        const numGames = config.gameType.split("-")[1];
-        gameTypeText = `Personalizado (${numGames} games)`;
-      }
-
-      const scoringTypes = {
-        golden: "Punto de Oro",
-        advantage: "Con Ventaja",
-      };
-
-      const sideChangeTypes = {
-        odd: "Juegos impares",
-        set: "Final de set",
-        none: "Sin cambio",
-      };
-
-      document.getElementById("teams-summary").innerHTML = `
-        <p class="mb-2"><strong>Pareja 1:</strong> ${players.jugador1} / ${players.jugador2}</p>
-        <p><strong>Pareja 2:</strong> ${players.jugador3} / ${players.jugador4}</p>
-      `;
-
-      const tournamentEl = document.getElementById("tournamentMode");
-      const isTournament = tournamentEl ? tournamentEl.checked : false;
-
-      document.getElementById("format-summary").innerHTML = `
-        <p class="mb-2"><strong>Tipo:</strong> ${gameTypeText}</p>
-        <p><strong>Puntuación:</strong> ${scoringTypes[config.scoring] || "No seleccionado"}</p>
-        <p><strong>Cambio lado:</strong> ${sideChangeTypes[config.sideChange] || "No seleccionado"}</p>
-        <p><strong>Modo Torneo:</strong> ${isTournament ? "Activado" : "Desactivado"}</p>
-      `;
-    }
-
-    // =========================
-    // Iniciar Partido (MQTT + Local)
-    // =========================
-    async function startMatch() {
-      closeConfirmModal();
-
-      const players = {
-        jugador1: document.getElementById("jugador1").value.trim(),
-        jugador2: document.getElementById("jugador2").value.trim(),
-        jugador3: document.getElementById("jugador3").value.trim(),
-        jugador4: document.getElementById("jugador4").value.trim(),
-      };
-
-      if (!players.jugador1 || !players.jugador2 || !players.jugador3 || !players.jugador4) {
-        alert("Por favor, completa todos los nombres de los jugadores.");
-        return;
-      }
-      if (!config.gameType || !config.scoring || !config.sideChange) {
-        alert("Por favor, completa toda la configuración del partido antes de iniciar.");
-        return;
-      }
-
-      const tournamentEl = document.getElementById("tournamentMode");
-      const isTournament = tournamentEl ? tournamentEl.checked : false;
-
-      // params para LOCAL (ESP32 AP)
-      const params = new URLSearchParams();
-      params.append("a_first", players.jugador1);
-      params.append("a_last", players.jugador2);
-      params.append("b_first", players.jugador3);
-      params.append("b_last", players.jugador4);
-      params.append("gameType", config.gameType);
-      params.append("scoring", config.scoring);
-      params.append("sideChange", config.sideChange);
-      params.append("tournamentMode", isTournament);
-
-      // payload para MQTT (Internet)
-      const payload = {
-        a_first: players.jugador1,
-        a_last: players.jugador2,
-        b_first: players.jugador3,
-        b_last: players.jugador4,
-        gameType: config.gameType,
-        scoring: config.scoring,
-        sideChange: config.sideChange,
-        tournamentMode: isTournament
-      };
-
-      const mqttOk = mqttSendConfig(payload);
-
-      let localOk = false;
-      try {
-        await sendLocalConfig(params);
-        localOk = true;
-      } catch (e) {
-        localOk = false;
-      }
-
-      if (mqttOk || localOk) {
-        alert(
-          "✅ Configuración enviada.\n\n" +
-          (mqttOk ? "• MQTT: OK (Internet)\n" : "• MQTT: NO\n") +
-          (localOk ? "• Local: OK (ESP32)\n" : "• Local: NO\n") +
-          "\nRevisa la pantalla de la TV."
-        );
-      } else {
-        alert(
-          "❌ No se pudo enviar ni por MQTT ni local.\n\n" +
-          "Revisa Console (F12) por errores.\n" +
-          "Debe salir: '✅ MQTT conectado a HiveMQ Cloud'."
-        );
-      }
-    }
-
-    // =========================
-    // Reset Config
-    // =========================
-    function resetConfig() {
-      config = {
-        players: {},
-        gameType: "3sets",
-        scoring: "golden",
-        countingMethod: "players",
-        sideChange: "set",
-        tournamentMode: false,
-      };
-
-      const form = document.getElementById("configuracionForm");
-      if (form) form.reset();
-
-      const cg = document.getElementById("customGames");
-      if (cg) cg.value = "";
-
-      document.getElementById("game-type-summary-title").textContent = "Al mejor de 3";
-      document.getElementById("game-type-summary-desc").textContent = "Formato clásico (por defecto)";
-
-      setSegmentSelected("#scoring-golden, #scoring-advantage", "scoring-golden");
-      setSegmentSelected("#side-odd, #side-set, #side-none", "side-set");
-
-      const tournamentEl = document.getElementById("tournamentMode");
-      if (tournamentEl) tournamentEl.checked = false;
-
-      updateSummary();
-    }
-
-    // =========================
-    // Modal confirmación
-    // =========================
-    function openConfirmModal(evt) {
-      document.body.classList.add("modal-open");
-      if (evt) evt.preventDefault();
-
-      const players = {
-        jugador1: document.getElementById("jugador1").value.trim(),
-        jugador2: document.getElementById("jugador2").value.trim(),
-        jugador3: document.getElementById("jugador3").value.trim(),
-        jugador4: document.getElementById("jugador4").value.trim(),
-      };
-
-      if (!players.jugador1 || !players.jugador2 || !players.jugador3 || !players.jugador4) {
-        alert("Por favor, completa todos los nombres de los jugadores.");
-        return;
-      }
-      if (!config.gameType || !config.scoring || !config.sideChange) {
-        alert("Por favor, completa toda la configuración del partido.");
-        return;
-      }
-
-      updateSummary();
-      document.getElementById("confirmModal").classList.remove("hidden");
-    }
-
-    function closeConfirmModal() {
-      document.body.classList.remove("modal-open");
-      document.getElementById("confirmModal").classList.add("hidden");
-    }
-
-    // =========================
-    // Tabs
-    // =========================
-    function switchTab(tabName) {
-      document.querySelectorAll(".content-section").forEach((section) => section.classList.remove("active"));
-      document.querySelectorAll('[id^="tab-"]').forEach((tab) => {
-        tab.classList.remove("tab-active");
-        tab.classList.add("tab-inactive");
-      });
-
-      const section = document.getElementById(`${tabName}-tab`);
-      if (section) section.classList.add("active");
-
-      const tabBtn = document.getElementById(`tab-${tabName}`);
-      if (tabBtn) {
-        tabBtn.classList.remove("tab-inactive");
-        tabBtn.classList.add("tab-active");
-      }
-    }
-
-    // =========================
-    // Estadísticas (demo)
-    // =========================
-    function showFullStats() { alert("Demo: Historial completo (pendiente)"); }
-    function showBasicStats() { alert("Demo: Resumen (pendiente)"); }
-
-    // =========================
-    // Auth (demo)
-    // =========================
-    function showLoginForm() { switchTab("perfil"); }
-
-    function showRegisterForm() { switchTab("perfil"); }
-
-    function handleLogin(evt) {
-      evt.preventDefault();
-      isLoggedIn = true;
-      updateStatsView();
-      alert("Login demo: OK");
-    }
-
-    function handleRegister(evt) {
-      evt.preventDefault();
-      isLoggedIn = true;
-      updateStatsView();
-      alert("Registro demo: OK");
-    }
-
-    function handleLogout() {
-      isLoggedIn = false;
-      updateStatsView();
-      alert("Sesión cerrada");
-    }
-
-    function updateStatsView() {
-      const noLogin = document.getElementById("stats-no-login");
-      const withLogin = document.getElementById("stats-with-login");
-      if (!noLogin || !withLogin) return;
-
-      if (isLoggedIn) {
-        noLogin.classList.add("hidden");
-        withLogin.classList.remove("hidden");
-      } else {
-        noLogin.classList.remove("hidden");
-        withLogin.classList.add("hidden");
-      }
-    }
-
-    // =========================
-    // Init
-    // =========================
-    document.addEventListener("DOMContentLoaded", function () {
-      mqttConnect();
-      updateStatsView();
-
-      document.querySelectorAll('input[type="text"]').forEach((input) => {
-        input.addEventListener("input", updateSummary);
-      });
-
-      setSegmentSelected("#scoring-golden, #scoring-advantage", "scoring-golden");
-      setSegmentSelected("#side-odd, #side-set, #side-none", "side-set");
-
-      const tournamentEl = document.getElementById("tournamentMode");
-      if (tournamentEl) tournamentEl.addEventListener("change", updateSummary);
-
-      try {
-        const isMobile = window.matchMedia && window.matchMedia("(max-width: 640px)").matches;
-        if (isMobile) {
-          setTimeout(() => {
-            const banner = document.getElementById("download-banner");
-            if (banner) banner.classList.remove("hidden");
-          }, 4000);
-        }
-      } catch (e) {}
-
-      updateSummary();
+    document.querySelectorAll("#gameTypeModal .game-type-button-list button").forEach((btn) => {
+      btn.classList.remove("selected");
     });
-  </script>
+
+    const currentType = config.gameType;
+    const currentButton = document.querySelector(`#gameTypeModal button[onclick*="'${currentType}'"]`);
+    if (currentButton) currentButton.classList.add("selected");
+  }
+
+  function closeGameTypeModal() {
+    document.body.classList.remove("modal-open");
+    document.getElementById("gameTypeModal").classList.add("hidden");
+  }
+
+  function selectGameTypeFromModal(evt, type, title, desc) {
+    config.gameType = type;
+
+    document.querySelectorAll("#gameTypeModal .game-type-button-list button").forEach((btn) => btn.classList.remove("selected"));
+    const clicked = evt && evt.currentTarget ? evt.currentTarget : null;
+    if (clicked) clicked.classList.add("selected");
+
+    document.getElementById("game-type-summary-title").textContent = title;
+    document.getElementById("game-type-summary-desc").textContent = desc;
+
+    closeGameTypeModal();
+    updateSummary();
+  }
+
+  // ==========================================
+  // Selecciones configurador
+  // ==========================================
+  function selectScoring(type, element) {
+    config.scoring = type;
+    const parent = element.parentElement;
+    parent.querySelectorAll(".segment-button").forEach((btn) => btn.classList.remove("selected"));
+    element.classList.add("selected");
+    updateSummary();
+  }
+
+  function selectCountingMethod(type, element) {
+    config.countingMethod = type;
+    const parent = element.parentElement;
+    parent.querySelectorAll(".segment-button").forEach((btn) => btn.classList.remove("selected"));
+    element.classList.add("selected");
+    updateSummary();
+  }
+
+  function selectSideChange(type, element) {
+    config.sideChange = type;
+    const parent = element.parentElement;
+    parent.querySelectorAll(".segment-button").forEach((btn) => btn.classList.remove("selected"));
+    element.classList.add("selected");
+    updateSummary();
+  }
+
+  function selectCustomGames() {
+    const customGames = document.getElementById("customGames").value;
+    if (customGames) {
+      config.gameType = `custom-${customGames}`;
+      updateSummary();
+    }
+  }
+
+  // ==========================================
+  // Resumen modal
+  // ==========================================
+  function updateSummary() {
+    const players = {
+      jugador1: (document.getElementById("jugador1").value || "").trim() || "Jugador 1",
+      jugador2: (document.getElementById("jugador2").value || "").trim() || "Jugador 2",
+      jugador3: (document.getElementById("jugador3").value || "").trim() || "Jugador 3",
+      jugador4: (document.getElementById("jugador4").value || "").trim() || "Jugador 4",
+    };
+
+    const gameTypes = {
+      "1set": "1 Set",
+      "3sets": "Al mejor de 3 sets",
+      "2sets-super": "2 Sets + Super Tie-break",
+      "tiebreak": "Solo Tie-break (7 puntos)",
+      "super-tiebreak": "Solo Super Tie-break (10 puntos)",
+      "quick": "Juego Rápido (4 games)",
+    };
+
+    let gameTypeText = gameTypes[config.gameType] || "No seleccionado";
+    if (config.gameType && config.gameType.startsWith("custom-")) {
+      const numGames = config.gameType.split("-")[1];
+      gameTypeText = `Personalizado (${numGames} games)`;
+    }
+
+    const scoringTypes = { golden: "Punto de Oro", advantage: "Con Ventaja" };
+    const sideChangeTypes = { odd: "Juegos impares", set: "Final de set", none: "Sin cambio" };
+
+    document.getElementById("teams-summary").innerHTML = `
+      <p class="mb-2"><strong>Pareja 1:</strong> ${players.jugador1} / ${players.jugador2}</p>
+      <p><strong>Pareja 2:</strong> ${players.jugador3} / ${players.jugador4}</p>
+    `;
+
+    const tournamentEl = document.getElementById("tournamentMode");
+    const isTournament = tournamentEl ? tournamentEl.checked : false;
+
+    document.getElementById("format-summary").innerHTML = `
+      <p class="mb-2"><strong>Tipo:</strong> ${gameTypeText}</p>
+      <p><strong>Puntuación:</strong> ${scoringTypes[config.scoring] || "No seleccionado"}</p>
+      <p><strong>Cambio lado:</strong> ${sideChangeTypes[config.sideChange] || "No seleccionado"}</p>
+      <p><strong>Modo Torneo:</strong> ${isTournament ? "Activado" : "Desactivado"}</p>
+    `;
+  }
+
+  // ==========================================
+  // Iniciar Partido
+  // - Si MQTT está conectado => envía por internet (HiveMQ)
+  // - Si no => intenta local (192.168.4.1)
+  // ==========================================
+  function startMatch() {
+    closeConfirmModal();
+
+    const players = {
+      jugador1: document.getElementById("jugador1").value.trim(),
+      jugador2: document.getElementById("jugador2").value.trim(),
+      jugador3: document.getElementById("jugador3").value.trim(),
+      jugador4: document.getElementById("jugador4").value.trim(),
+    };
+
+    if (!players.jugador1 || !players.jugador2 || !players.jugador3 || !players.jugador4) {
+      alert("Por favor, completa todos los nombres de los jugadores.");
+      return;
+    }
+    if (!config.gameType || !config.scoring || !config.sideChange) {
+      alert("Por favor, completa toda la configuración del partido antes de iniciar.");
+      return;
+    }
+
+    const tournamentEl = document.getElementById("tournamentMode");
+    const isTournament = tournamentEl ? tournamentEl.checked : false;
+
+    // Payload JSON (para MQTT)
+    const payload = {
+      a_first: players.jugador1,
+      a_last: players.jugador2,
+      b_first: players.jugador3,
+      b_last: players.jugador4,
+      gameType: config.gameType,
+      scoring: config.scoring,
+      sideChange: config.sideChange,
+      tournamentMode: isTournament
+    };
+
+    // 1) Intentar MQTT (internet)
+    const okMqtt = mqttSendConfig(payload);
+    if (okMqtt) {
+      setTimeout(() => {
+        alert("✅ ¡Configuración enviada por MQTT (Internet)!\n\nRevisa la pantalla de la TV.");
+      }, 100);
+      return;
+    }
+
+    // 2) Fallback local (AP del ESP32)
+    const params = new URLSearchParams();
+    params.append("a_first", players.jugador1);
+    params.append("a_last", players.jugador2);
+    params.append("b_first", players.jugador3);
+    params.append("b_last", players.jugador4);
+    params.append("gameType", config.gameType);
+    params.append("scoring", config.scoring);
+    params.append("sideChange", config.sideChange);
+    params.append("tournamentMode", isTournament);
+
+    const apiUrl = `http://192.168.4.1/api/names?${params.toString()}`;
+
+    fetch(apiUrl, { mode: "no-cors" })
+      .then(() => {
+        setTimeout(() => {
+          alert("✅ Enviado localmente al ESP32 (192.168.4.1).\n\nRevisa la pantalla de la TV.");
+        }, 100);
+      })
+      .catch((error) => {
+        console.error("Error local:", error);
+        alert("⚠️ No se pudo enviar por MQTT ni local.\n\n1) Si estás en internet: revisa consola (F12) para ver el error MQTT.\n2) Si estás en el AP: asegúrate de estar conectado a 'PadelScoreboard'.");
+      });
+  }
+
+  // ==========================================
+  // Reset Config
+  // ==========================================
+  function resetConfig() {
+    config = {
+      players: {},
+      gameType: "3sets",
+      scoring: "golden",
+      countingMethod: "players",
+      sideChange: "set",
+      tournamentMode: false,
+    };
+
+    const form = document.getElementById("configuracionForm");
+    if (form) form.reset();
+
+    const cg = document.getElementById("customGames");
+    if (cg) cg.value = "";
+
+    document.getElementById("game-type-summary-title").textContent = "Al mejor de 3";
+    document.getElementById("game-type-summary-desc").textContent = "Formato clásico (por defecto)";
+
+    setSegmentSelected("#scoring-golden, #scoring-advantage", "scoring-golden");
+    setSegmentSelected("#side-odd, #side-set, #side-none", "side-set");
+
+    const tournamentEl = document.getElementById("tournamentMode");
+    if (tournamentEl) tournamentEl.checked = false;
+
+    updateSummary();
+  }
+
+  // ==========================================
+  // Modal confirmación
+  // ==========================================
+  function openConfirmModal(evt) {
+    document.body.classList.add("modal-open");
+    if (evt) evt.preventDefault();
+
+    const players = {
+      jugador1: document.getElementById("jugador1").value.trim(),
+      jugador2: document.getElementById("jugador2").value.trim(),
+      jugador3: document.getElementById("jugador3").value.trim(),
+      jugador4: document.getElementById("jugador4").value.trim(),
+    };
+
+    if (!players.jugador1 || !players.jugador2 || !players.jugador3 || !players.jugador4) {
+      alert("Por favor, completa todos los nombres de los jugadores.");
+      return;
+    }
+    if (!config.gameType || !config.scoring || !config.sideChange) {
+      alert("Por favor, completa toda la configuración del partido.");
+      return;
+    }
+
+    updateSummary();
+    document.getElementById("confirmModal").classList.remove("hidden");
+  }
+
+  function closeConfirmModal() {
+    document.body.classList.remove("modal-open");
+    document.getElementById("confirmModal").classList.add("hidden");
+  }
+
+  // ==========================================
+  // Tabs
+  // ==========================================
+  function switchTab(tabName) {
+    document.querySelectorAll(".content-section").forEach((section) => section.classList.remove("active"));
+    document.querySelectorAll('[id^="tab-"]').forEach((tab) => {
+      tab.classList.remove("tab-active");
+      tab.classList.add("tab-inactive");
+    });
+
+    const section = document.getElementById(`${tabName}-tab`);
+    if (section) section.classList.add("active");
+
+    const tabBtn = document.getElementById(`tab-${tabName}`);
+    if (tabBtn) {
+      tabBtn.classList.remove("tab-inactive");
+      tabBtn.classList.add("tab-active");
+    }
+  }
+
+  // ==========================================
+  // Estadísticas / Auth (demo) - lo tuyo
+  // ==========================================
+  function updateStatsView() {
+    if (isLoggedIn) {
+      document.getElementById("stats-no-login").classList.add("hidden");
+      document.getElementById("stats-with-login").classList.remove("hidden");
+    } else {
+      document.getElementById("stats-no-login").classList.remove("hidden");
+      document.getElementById("stats-with-login").classList.add("hidden");
+    }
+  }
+
+  function showLoginForm() {
+    document.getElementById("profile-no-login").classList.add("hidden");
+    document.getElementById("user-profile").classList.add("hidden");
+    document.getElementById("register-form").classList.add("hidden");
+    document.getElementById("login-form").classList.remove("hidden");
+    switchTab("perfil");
+  }
+
+  function showRegisterForm() {
+    document.getElementById("profile-no-login").classList.add("hidden");
+    document.getElementById("user-profile").classList.add("hidden");
+    document.getElementById("login-form").classList.add("hidden");
+    document.getElementById("register-form").classList.remove("hidden");
+    switchTab("perfil");
+  }
+
+  function updateUserProfile() {
+    if (!currentUser) return;
+    document.getElementById("user-initials").textContent = currentUser.initials;
+    document.getElementById("user-name").textContent = currentUser.name;
+    document.getElementById("user-email").textContent = currentUser.email;
+  }
+
+  function showUserProfile() {
+    document.getElementById("profile-no-login").classList.add("hidden");
+    document.getElementById("login-form").classList.add("hidden");
+    document.getElementById("register-form").classList.add("hidden");
+    document.getElementById("user-profile").classList.remove("hidden");
+  }
+
+  function handleLogin(evt) {
+    evt.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (email && password) {
+      isLoggedIn = true;
+      const base = email.split("@")[0] || "Usuario";
+      currentUser = {
+        name: base.charAt(0).toUpperCase() + base.slice(1),
+        email: email,
+        initials: (base.charAt(0) || "U").toUpperCase() + (base.charAt(1) || "U").toUpperCase(),
+      };
+
+      updateUserProfile();
+      updateStatsView();
+      showUserProfile();
+
+      alert("¡Bienvenido! Has iniciado sesión correctamente.");
+    }
+  }
+
+  function handleRegister(evt) {
+    evt.preventDefault();
+
+    const name = document.getElementById("reg-name").value;
+    const email = document.getElementById("reg-email").value;
+    const password = document.getElementById("reg-password").value;
+
+    if ((password || "").length < 6) {
+      alert("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
+    if (name && email && password) {
+      isLoggedIn = true;
+      currentUser = {
+        name: name,
+        email: email,
+        initials: name
+          .split(" ")
+          .filter(Boolean)
+          .map((n) => n.charAt(0))
+          .join("")
+          .toUpperCase()
+          .substring(0, 2),
+      };
+
+      updateUserProfile();
+      updateStatsView();
+      showUserProfile();
+
+      alert("¡Cuenta creada exitosamente! Bienvenido a PadelBoard.");
+    }
+  }
+
+  function handleLogout() {
+    isLoggedIn = false;
+    currentUser = null;
+    updateStatsView();
+
+    document.getElementById("user-profile").classList.add("hidden");
+    document.getElementById("register-form").classList.add("hidden");
+    document.getElementById("profile-no-login").classList.add("hidden");
+    document.getElementById("login-form").classList.remove("hidden");
+
+    alert("Sesión cerrada correctamente");
+  }
+
+  // ==========================================
+  // Init
+  // ==========================================
+  document.addEventListener("DOMContentLoaded", function () {
+    // IMPORTANTE: revisa que estés probando en tu GitHub Pages:
+    // https://dimitri5diciembre-design.github.io/padelboard-config/
+    // (NO en github.com/settings/pages porque ahí no corre tu index.html)
+
+    mqttConnect();       // <-- conecta a HiveMQ Cloud
+    updateStatsView();   // lo que ya tenías
+
+    if (!isLoggedIn) {
+      document.getElementById("login-form").classList.remove("hidden");
+      document.getElementById("profile-no-login").classList.add("hidden");
+      document.getElementById("user-profile").classList.add("hidden");
+      document.getElementById("register-form").classList.add("hidden");
+    }
+
+    document.querySelectorAll('input[type="text"]').forEach((input) => {
+      input.addEventListener("input", updateSummary);
+    });
+
+    setSegmentSelected("#scoring-golden, #scoring-advantage", "scoring-golden");
+    setSegmentSelected("#side-odd, #side-set, #side-none", "side-set");
+
+    const tournamentEl = document.getElementById("tournamentMode");
+    if (tournamentEl) tournamentEl.addEventListener("change", updateSummary);
+
+    try {
+      const isMobile = window.matchMedia && window.matchMedia("(max-width: 640px)").matches;
+      if (isMobile) {
+        setTimeout(() => {
+          const banner = document.getElementById("download-banner");
+          if (banner) banner.classList.remove("hidden");
+        }, 4000);
+      }
+    } catch (e) {}
+
+    updateSummary();
+  });
+</script>
+
 </body>
 </html>
+
