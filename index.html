@@ -1257,6 +1257,33 @@ Beneficios de la app móvil:
       const isTournament = tournamentEl ? tournamentEl.checked : false;
       params.append("tournamentMode", isTournament);
 
+      // =========================
+  // ENVIAR por MQTT (HiveMQ)
+  // =========================
+
+  // 1) Payload tipo JSON (recomendado)
+  const payload = {
+    a_first: players.jugador1,
+    a_last: players.jugador2,
+    b_first: players.jugador3,
+    b_last: players.jugador4,
+    gameType: config.gameType,
+    scoring: config.scoring,
+    sideChange: config.sideChange,
+    tournamentMode: isTournament
+  };
+
+  // 2) Publicar al topic que ya usas: padelboard/PB2/config
+  const ok = mqttSendConfig(payload); // <- esta función la agregamos antes (publish JSON)
+
+  if (ok) {
+    setTimeout(() => {
+      alert("✅ ¡Configuración enviada por MQTT!\n\nRevisa la pantalla de la TV.");
+    }, 100);
+  } else {
+    alert("⚠️ No se pudo enviar. MQTT aún no está conectado.");
+  }
+}
       // IMPORTANTE:
       // - Si estás conectado al AP del ESP32, esto funciona directo (192.168.4.1).
       // - Para "desde internet", luego cambiamos esto a tu dominio/API (por ejemplo: https://tudominio/api/names)
@@ -1674,5 +1701,6 @@ Beneficios de la app móvil:
   </script>
 </body>
 </html>
+
 
 
